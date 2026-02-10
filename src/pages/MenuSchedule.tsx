@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, Maximize2, X } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RotateCcw, X } from 'lucide-react';
 import { SimpleMealDetailModal } from '../components/SimpleMealDetailModal';
 import { getMonthlyMealPlan, type MonthlyMealPlanData } from '../api/mealplan';
 import { TransformWrapper, TransformComponent } from 'react-zoom-pan-pinch';
@@ -505,7 +505,7 @@ export function MenuSchedule({ darkMode = false, userAllergies }: MenuSchedulePr
             wheel={{ disabled: true }}
             panning={{ disabled: false, velocityDisabled: true }}
             doubleClick={{ disabled: false, mode: 'reset' }}
-            limitToBounds={false}
+            limitToBounds={true}
             centerZoomedOut={true}
             disablePadding={false}
             alignmentAnimation={{ disabled: true }}
@@ -703,7 +703,7 @@ export function MenuSchedule({ darkMode = false, userAllergies }: MenuSchedulePr
                   }`}
                   aria-label="전체 보기"
                 >
-                  <Maximize2 className="w-5 h-5" />
+                  <RotateCcw className="w-5 h-5" />
                 </button>
               </>
             )}

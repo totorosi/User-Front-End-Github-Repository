@@ -125,7 +125,7 @@ export default function MainApp({ onLogout }: MainAppProps) {
       .map((code) => ALLERGY_SHORT_NAMES[code])
       .filter(Boolean) as string[];
     setUserAllergies(names);
-  }, []);
+  }, [currentPage]);
 
   const handlePageChange = (page: PageType, postId?: string) => {
     setCurrentPage(page);

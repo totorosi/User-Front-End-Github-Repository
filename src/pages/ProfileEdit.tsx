@@ -53,7 +53,7 @@ export default function ProfileEdit() {
 
         setForm({
           name: res.data?.name ?? '',
-          phone: res.data?.phone ?? '',
+          phone: formatPhoneNumber(res.data?.phone ?? ''),
           grade: res.data?.grade ?? 1,
           classNo: res.data?.class_no ?? 1,
           allergyCodes: mergedAllergy,
@@ -114,7 +114,7 @@ export default function ProfileEdit() {
 
       await updateStudentMe({
         name: form.name,
-        phone: form.phone,
+        phone: form.phone.replace(/\D/g, ''),
         grade: form.grade,
         class_no: form.classNo,
         allergy_codes: form.allergyCodes,

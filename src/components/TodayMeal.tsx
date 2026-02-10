@@ -260,20 +260,20 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
                                     </div>
 
                                     {lunchNutrition && (
-                                        <div className={`mt-auto grid grid-cols-4 gap-2 pt-3 border-t ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                                            <div className={`flex flex-col items-center rounded-lg py-2 ${darkMode ? 'bg-gray-600' : 'bg-orange-50'}`}>
+                                        <div className={`mt-auto grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+                                            <div className={`flex flex-col items-center rounded-lg px-2 py-2 ${darkMode ? 'bg-gray-600' : 'bg-orange-50'}`}>
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>칼로리</span>
                                                 <span className={`text-sm font-bold ${darkMode ? 'text-orange-300' : 'text-orange-600'}`}>{lunchNutrition.calories.toLocaleString()}kcal</span>
                                             </div>
-                                            <div className={`flex flex-col items-center rounded-lg py-2 ${darkMode ? 'bg-gray-600' : 'bg-blue-50'}`}>
+                                            <div className={`flex flex-col items-center rounded-lg px-2 py-2 ${darkMode ? 'bg-gray-600' : 'bg-blue-50'}`}>
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>탄수화물</span>
                                                 <span className={`text-sm font-bold ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>{lunchNutrition.carbs.toLocaleString()}g</span>
                                             </div>
-                                            <div className={`flex flex-col items-center rounded-lg py-2 ${darkMode ? 'bg-gray-600' : 'bg-green-50'}`}>
+                                            <div className={`flex flex-col items-center rounded-lg px-2 py-2 ${darkMode ? 'bg-gray-600' : 'bg-green-50'}`}>
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>단백질</span>
                                                 <span className={`text-sm font-bold ${darkMode ? 'text-green-300' : 'text-green-600'}`}>{lunchNutrition.protein.toLocaleString()}g</span>
                                             </div>
-                                            <div className={`flex flex-col items-center rounded-lg py-2 ${darkMode ? 'bg-gray-600' : 'bg-purple-50'}`}>
+                                            <div className={`flex flex-col items-center rounded-lg px-2 py-2 ${darkMode ? 'bg-gray-600' : 'bg-purple-50'}`}>
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>지방</span>
                                                 <span className={`text-sm font-bold ${darkMode ? 'text-purple-300' : 'text-purple-600'}`}>{lunchNutrition.fat.toLocaleString()}g</span>
                                             </div>
@@ -317,20 +317,20 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
                                     </div>
 
                                     {dinnerNutrition && (
-                                        <div className={`mt-auto grid grid-cols-4 gap-2 pt-3 border-t ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
-                                            <div className={`flex flex-col items-center rounded-lg py-2 ${darkMode ? 'bg-gray-600' : 'bg-orange-50'}`}>
+                                        <div className={`mt-auto grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t ${darkMode ? 'border-gray-600' : 'border-gray-200'}`}>
+                                            <div className={`flex flex-col items-center rounded-lg px-2 py-2 ${darkMode ? 'bg-gray-600' : 'bg-orange-50'}`}>
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>칼로리</span>
                                                 <span className={`text-sm font-bold ${darkMode ? 'text-orange-300' : 'text-orange-600'}`}>{dinnerNutrition.calories.toLocaleString()}kcal</span>
                                             </div>
-                                            <div className={`flex flex-col items-center rounded-lg py-2 ${darkMode ? 'bg-gray-600' : 'bg-blue-50'}`}>
+                                            <div className={`flex flex-col items-center rounded-lg px-2 py-2 ${darkMode ? 'bg-gray-600' : 'bg-blue-50'}`}>
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>탄수화물</span>
                                                 <span className={`text-sm font-bold ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>{dinnerNutrition.carbs.toLocaleString()}g</span>
                                             </div>
-                                            <div className={`flex flex-col items-center rounded-lg py-2 ${darkMode ? 'bg-gray-600' : 'bg-green-50'}`}>
+                                            <div className={`flex flex-col items-center rounded-lg px-2 py-2 ${darkMode ? 'bg-gray-600' : 'bg-green-50'}`}>
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>단백질</span>
                                                 <span className={`text-sm font-bold ${darkMode ? 'text-green-300' : 'text-green-600'}`}>{dinnerNutrition.protein.toLocaleString()}g</span>
                                             </div>
-                                            <div className={`flex flex-col items-center rounded-lg py-2 ${darkMode ? 'bg-gray-600' : 'bg-purple-50'}`}>
+                                            <div className={`flex flex-col items-center rounded-lg px-2 py-2 ${darkMode ? 'bg-gray-600' : 'bg-purple-50'}`}>
                                                 <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>지방</span>
                                                 <span className={`text-sm font-bold ${darkMode ? 'text-purple-300' : 'text-purple-600'}`}>{dinnerNutrition.fat.toLocaleString()}g</span>
                                             </div>
