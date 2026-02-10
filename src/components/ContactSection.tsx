@@ -1,6 +1,8 @@
 import { useState } from "react";
+import { useNotification } from "../contexts/NotificationContext";
 
 export default function ContactSection() {
+  const { notify } = useNotification();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -11,7 +13,7 @@ export default function ContactSection() {
     e.preventDefault();
     console.log("Form submitted:", formData);
     // Mock form submission
-    alert("Thank you for your message! We'll get back to you soon.");
+    notify("Thank you for your message! We'll get back to you soon.", 'success');
     setFormData({ name: "", email: "", message: "" });
   };
 

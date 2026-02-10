@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNotification } from "../contexts/NotificationContext";
 
 interface SignupPageProps {
   onBackToHome: () => void;
 }
 
 export default function SignupPage({ onBackToHome }: SignupPageProps) {
+  const { notify } = useNotification();
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -16,11 +18,11 @@ export default function SignupPage({ onBackToHome }: SignupPageProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
-      alert("Passwords don't match!");
+      notify("Passwords don't match!", 'error');
       return;
     }
     console.log("Signup submitted:", formData);
-    alert("Signup functionality would be implemented here!");
+    notify("Signup functionality would be implemented here!", 'info');
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

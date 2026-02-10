@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ArrowLeft, Save } from 'lucide-react';
 import { PageType } from '../App';
+import { useNotification } from '../contexts/NotificationContext';
 
 interface BoardWriteProps {
   darkMode?: boolean;
@@ -9,6 +10,7 @@ interface BoardWriteProps {
 }
 
 export function BoardWrite({ darkMode = false, onPageChange, onSubmit }: BoardWriteProps) {
+  const { notify } = useNotification();
   const [category, setCategory] = useState<string>('건의');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
@@ -31,11 +33,11 @@ export function BoardWrite({ darkMode = false, onPageChange, onSubmit }: BoardWr
 
   const handleSubmit = () => {
     if (!title.trim()) {
-      alert('제목을 입력해주세요.');
+      notify('제목을 입력해주세요.', 'warning');
       return;
     }
     if (!content.trim()) {
-      alert('내용을 입력해주세요.');
+      notify('내용을 입력해주세요.', 'warning');
       return;
     }
 
@@ -45,7 +47,7 @@ export function BoardWrite({ darkMode = false, onPageChange, onSubmit }: BoardWr
       content: content.trim(),
     });
 
-    alert('게시물이 등록되었습니다!');
+    notify('게시물이 등록되었습니다!', 'success');
     onPageChange('board');
   };
 

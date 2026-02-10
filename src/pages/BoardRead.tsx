@@ -3,6 +3,7 @@ import { ArrowLeft, Edit, Trash2, Eye } from 'lucide-react';
 import { PageType } from '../App';
 import { BoardPost } from './Board';
 import { fetchBoardDetail } from '../api/board';
+import { useNotification } from '../contexts/NotificationContext';
 
 interface BoardReadProps {
   darkMode?: boolean;
@@ -21,6 +22,7 @@ function apiCategoryToUiCategory(cat: string): BoardPost['category'] {
 }
 
 export function BoardRead({ darkMode = false, onPageChange, postId, onDelete, currentUser }: BoardReadProps) {
+  const { confirmDialog } = useNotification();
   const [post, setPost] = useState<BoardPost | null>(null);
   const [authorNameRaw, setAuthorNameRaw] = useState<string>('');
   const [canEditFromServer, setCanEditFromServer] = useState<boolean | null>(null);
@@ -132,8 +134,9 @@ export function BoardRead({ darkMode = false, onPageChange, postId, onDelete, cu
     });
   };
 
-  const handleDelete = () => {
-    if (window.confirm('정말로 이 게시물을 삭제하시겠습니까?')) {
+  const handleDelete = async () => {
+    const ok = await confirmDialog('정말로 이 게시물을 삭제하시겠습니까?');
+    if (ok) {
       onDelete(post.id);
       onPageChange('board');
     }

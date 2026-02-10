@@ -3,6 +3,7 @@ import { ArrowLeft, Save } from 'lucide-react';
 import { PageType } from '../App';
 import { BoardPost } from './Board';
 import { fetchBoardDetail } from '../api/board';
+import { useNotification } from '../contexts/NotificationContext';
 
 interface BoardEditProps {
   darkMode?: boolean;
@@ -20,6 +21,7 @@ function apiCategoryToUiCategory(cat: string): BoardPost['category'] {
 }
 
 export function BoardEdit({ darkMode = false, onPageChange, postId, onUpdate }: BoardEditProps) {
+  const { notify } = useNotification();
   const [post, setPost] = useState<BoardPost | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,11 +91,11 @@ export function BoardEdit({ darkMode = false, onPageChange, postId, onUpdate }: 
     if (!post) return;
 
     if (!title.trim()) {
-      alert('제목을 입력해주세요.');
+      notify('제목을 입력해주세요.', 'warning');
       return;
     }
     if (!content.trim()) {
-      alert('내용을 입력해주세요.');
+      notify('내용을 입력해주세요.', 'warning');
       return;
     }
 
@@ -103,7 +105,7 @@ export function BoardEdit({ darkMode = false, onPageChange, postId, onUpdate }: 
       content: content.trim(),
     });
 
-    alert('게시물이 수정되었습니다!');
+    notify('게시물이 수정되었습니다!', 'success');
     onPageChange('boardRead', post.id);
   };
 

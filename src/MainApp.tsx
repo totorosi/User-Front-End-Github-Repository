@@ -11,7 +11,7 @@ import { Board, BoardPost } from './pages/Board';
 import { BoardRead } from './pages/BoardRead';
 import { BoardWrite } from './pages/BoardWrite';
 import { BoardEdit } from './pages/BoardEdit';
-import { Toaster } from './components/ui/sonner';
+import { useNotification } from './contexts/NotificationContext';
 import {
   createBoard as apiCreateBoard,
   deleteBoard as apiDeleteBoard,
@@ -21,7 +21,6 @@ import {
   type BoardCategory,
 } from './api/board';
 import { changePassword, getStudentMeCache, updateStudentMe } from './api/student';
-import { toast } from 'sonner@2.0.3';
 import { checkPasswordPolicy, PASSWORD_RULE_TEXT, PASSWORD_RULE_TOAST } from './utils/passwordPolicy';
 import { useErrorModal } from './contexts/ErrorModalContext';
 import { ALLERGY_ITEMS, ALLERGY_SHORT_NAMES } from './utils/allergy';
@@ -73,6 +72,7 @@ function listItemToBoardPost(it: BoardListItem): BoardPost {
 
 export default function MainApp({ onLogout }: MainAppProps) {
   const { showError } = useErrorModal();
+  const { notify } = useNotification();
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [showSidebar, setShowSidebar] = useState(false);
 
@@ -289,7 +289,7 @@ export default function MainApp({ onLogout }: MainAppProps) {
                 }
                 try {
                   await changePassword({ currentPassword: pwCurrent, newPassword: pwNew });
-                  toast.success('비밀번호가 변경되었습니다!');
+                  notify('비밀번호가 변경되었습니다!', 'success');
                   setCurrentPage('profile');
                 } catch (e: any) {
                   showError(e?.message || '비밀번호 변경에 실패했습니다.');
@@ -345,7 +345,7 @@ export default function MainApp({ onLogout }: MainAppProps) {
                   onClick={async () => {
                     try {
                       await updateStudentMe({ allergy_codes: userAllergyCodes });
-                      toast.success('알레르기 정보가 저장되었습니다!');
+                      notify('알레르기 정보가 저장되었습니다!', 'success');
                       setCurrentPage('profile');
                     } catch (e: any) {
                       showError(e?.message || '알레르기 정보 저장에 실패했습니다.');
@@ -392,7 +392,6 @@ export default function MainApp({ onLogout }: MainAppProps) {
         {renderPage()}
       </main>
       <Footer darkMode={darkMode} />
-      <Toaster />
     </div>
   );
 }

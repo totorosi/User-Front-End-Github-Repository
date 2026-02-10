@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Star, Send, CheckCircle, Clock, AlertCircle, Bug } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from '../components/ui/alert-dialog';
-import { toast } from 'sonner@2.0.3';
+import { useNotification } from '../contexts/NotificationContext';
 import { useErrorModal } from '../contexts/ErrorModalContext';
 import { Switch } from '../components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
@@ -334,6 +334,7 @@ const getDefaultTab = (): 'lunch' | 'dinner' => {
 
 export function Satisfaction() {
   const { showError } = useErrorModal();
+  const { notify } = useNotification();
   const [activeTab, setActiveTab] = useState<'lunch' | 'dinner'>(getDefaultTab());
   
   // 개발 모드 (상태 강제 설정용)
@@ -464,7 +465,7 @@ export function Satisfaction() {
         rating: Math.max(1, Math.min(5, Math.round(lunchRating))),
         content: lunchComment.trim().slice(0, 200),
       });
-      toast.success('중식 평가가 제출되었습니다!');
+      notify('중식 평가가 제출되었습니다!', 'success');
       try {
         localStorage.setItem(getSatisfactionLockKey(todayDateStr, 'LUNCH'), '1');
       } catch {
@@ -480,7 +481,7 @@ export function Satisfaction() {
           // ignore
         }
         setLunchSubmitted(true);
-        toast.info('이미 오늘 중식 만족도 평가를 완료했습니다.');
+        notify('이미 오늘 중식 만족도 평가를 완료했습니다.', 'info');
         return;
       }
 
@@ -506,7 +507,7 @@ export function Satisfaction() {
         rating: Math.max(1, Math.min(5, Math.round(dinnerRating))),
         content: dinnerComment.trim().slice(0, 200),
       });
-      toast.success('석식 평가가 제출되었습니다!');
+      notify('석식 평가가 제출되었습니다!', 'success');
       try {
         localStorage.setItem(getSatisfactionLockKey(todayDateStr, 'DINNER'), '1');
       } catch {
@@ -521,7 +522,7 @@ export function Satisfaction() {
           // ignore
         }
         setDinnerSubmitted(true);
-        toast.info('이미 오늘 석식 만족도 평가를 완료했습니다.');
+        notify('이미 오늘 석식 만족도 평가를 완료했습니다.', 'info');
         return;
       }
 

@@ -6,9 +6,9 @@ import FindPasswordPage from './components/FindPasswordPage';
 import StudentSignUpPage from './components/StudentSignUpPage';
 import MainApp from './MainApp';
 import PolicyPage from './pages/PolicyPage';
-import { Toaster } from './components/ui/sonner';
 import { clearAccessToken, getAccessToken } from './api/http';
 import { ErrorModalProvider } from './contexts/ErrorModalContext';
+import { NotificationProvider } from './contexts/NotificationContext';
 
 /**
  * Hash Router (react-router-dom 없이)
@@ -128,8 +128,9 @@ export default function App() {
 
   return (
     <ErrorModalProvider>
-      <Toaster />
-      {view}
+      <NotificationProvider>
+        {view}
+      </NotificationProvider>
     </ErrorModalProvider>
   );
 }

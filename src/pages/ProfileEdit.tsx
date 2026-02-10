@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { withdrawStudentAccount } from '../api/auth';
 import { updateStudentMe, getStudentMe, changePassword } from '../api/student';
 import { ALLERGY_ITEMS } from '../utils/allergy';
+import { useNotification } from '../contexts/NotificationContext';
 
 interface ProfileForm {
   name: string;
@@ -12,6 +13,7 @@ interface ProfileForm {
 }
 
 export default function ProfileEdit() {
+  const { notify, confirmDialog } = useNotification();
   const [form, setForm] = useState<ProfileForm>({
     name: '',
     phone: '',
@@ -120,7 +122,7 @@ export default function ProfileEdit() {
         allergy_codes: form.allergyCodes,
       });
 
-      alert('회원정보가 저장되었습니다.');
+      notify('회원정보가 저장되었습니다.', 'success');
     } catch (e: any) {
       setError(e?.message || '저장 중 오류가 발생했습니다.');
     } finally {
@@ -150,7 +152,7 @@ export default function ProfileEdit() {
         newPassword: pwForm.newPassword,
       });
 
-      alert('비밀번호가 변경되었습니다.');
+      notify('비밀번호가 변경되었습니다.', 'success');
       setPwForm({ currentPassword: '', newPassword: '', newPassword2: '' });
     } catch (e: any) {
       setError(e?.message || '비밀번호 변경에 실패했습니다.');
@@ -166,14 +168,15 @@ export default function ProfileEdit() {
     const pw = prompt('비밀번호를 입력해주세요.');
     if (!pw) return;
 
-    if (!confirm('정말 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.')) return;
+    const ok = await confirmDialog('정말 회원 탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');
+    if (!ok) return;
 
     try {
       await withdrawStudentAccount({ pw });
-      alert('회원 탈퇴가 완료되었습니다.');
+      notify('회원 탈퇴가 완료되었습니다.', 'success');
       window.location.href = '/';
     } catch (e: any) {
-      alert(e?.message || '회원 탈퇴에 실패했습니다.');
+      notify(e?.message || '회원 탈퇴에 실패했습니다.', 'error');
     }
   };
 

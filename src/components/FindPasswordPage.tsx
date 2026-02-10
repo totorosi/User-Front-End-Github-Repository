@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowLeft, Copy, KeyRound, Mail, Phone, User } from 'lucide-react';
 import AuthHeader from './AuthHeader';
 import { Footer } from './Footer';
-import { toast } from 'sonner@2.0.3';
+import { useNotification } from '../contexts/NotificationContext';
 import { findStudentTempPassword } from '../api/auth';
 import { formatPhoneNumber } from '../utils/phone';
 import { useErrorModal } from '../contexts/ErrorModalContext';
@@ -20,6 +20,7 @@ interface FindPasswordPageProps {
 
 export default function FindPasswordPage({ onNavigate }: FindPasswordPageProps) {
   const { showError } = useErrorModal();
+  const { notify } = useNotification();
   const [username, setUsername] = useState(''); // 아이디(이메일)
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -60,7 +61,7 @@ export default function FindPasswordPage({ onNavigate }: FindPasswordPageProps) 
         localStorage.setItem('prefill_login_password', String(temp));
       } catch {}
 
-      toast.success('임시 비밀번호가 발급되었습니다.');
+      notify('임시 비밀번호가 발급되었습니다.', 'success');
     } catch (err: any) {
       showError(err?.message || '비밀번호 찾기에 실패했습니다.');
     } finally {
@@ -72,7 +73,7 @@ export default function FindPasswordPage({ onNavigate }: FindPasswordPageProps) 
     if (!temporaryPassword) return;
     try {
       await navigator.clipboard.writeText(temporaryPassword);
-      toast.success('임시 비밀번호가 복사되었습니다.');
+      notify('임시 비밀번호가 복사되었습니다.', 'success');
     } catch {
       showError('복사에 실패했습니다. 직접 선택해 복사해주세요.');
     }

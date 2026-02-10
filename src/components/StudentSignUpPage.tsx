@@ -6,7 +6,7 @@ import PrivacyModal from './PrivacyModal';
 import { Footer } from './Footer';
 import { signup as apiSignup, checkDuplicateEmail } from '../api/auth';
 import { searchSchools, type SchoolSearchItem } from '../api/schools';
-import { toast } from 'sonner@2.0.3';
+import { useNotification } from '../contexts/NotificationContext';
 import { formatPhoneNumber } from '../utils/phone';
 import { checkPasswordPolicy, PASSWORD_RULE_TEXT, PASSWORD_RULE_TOAST } from '../utils/passwordPolicy';
 import { ALLERGY_ITEMS } from '../utils/allergy';
@@ -28,6 +28,7 @@ interface StudentSignUpPageProps {
 
 export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps) {
     const { showError } = useErrorModal();
+    const { notify } = useNotification();
     const [step, setStep] = useState(1); // 1 or 2
 
     const [formData, setFormData] = useState({
@@ -99,7 +100,7 @@ export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps
             if (isDuplicate) {
                 showError('이미 사용 중인 이메일입니다.');
             } else {
-                toast.success('사용 가능한 이메일입니다.');
+                notify('사용 가능한 이메일입니다.', 'success');
             }
         } catch {
             showError('중복 확인에 실패했습니다. 다시 시도해주세요.');
@@ -219,7 +220,7 @@ export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps
                 class_no,
                 allergy_codes: selectedAllergies,
             });
-            toast.success('회원가입이 완료되었습니다! 이제 로그인해주세요.');
+            notify('회원가입이 완료되었습니다! 이제 로그인해주세요.', 'success');
             onNavigate('login');
         } catch (err: any) {
             const msg = err?.message || '회원가입에 실패했습니다.';
