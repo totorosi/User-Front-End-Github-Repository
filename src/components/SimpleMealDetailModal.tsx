@@ -1,8 +1,16 @@
 import { X } from 'lucide-react';
+import { ALLERGY_SHORT_NAMES } from '../utils/allergy';
 
 interface MealItem {
   name: string;
   allergens?: string; // 보통 "5" 또는 "4.5" 형태
+}
+
+interface NutritionInfo {
+  calories: number;
+  carbs: number;
+  protein: number;
+  fat: number;
 }
 
 interface SimpleMealDetailModalProps {
@@ -11,30 +19,15 @@ interface SimpleMealDetailModalProps {
   date: string;
   mealType: 'lunch' | 'dinner';
   meals: MealItem[];
+  nutrition?: NutritionInfo;
   darkMode?: boolean;
-  userAllergies?: string[]; // ✅ 추가
+  userAllergies?: string[];
 }
 
-const allergenNumberMap: Record<string, number> = {
-  '난류': 1,
-  '우유': 2,
-  '메밀': 3,
-  '땅콩': 4,
-  '대두': 5,
-  '밀': 6,
-  '고등어': 7,
-  '게': 8,
-  '새우': 9,
-  '돼지고기': 10,
-  '복숭아': 11,
-  '토마토': 12,
-  '아황산류': 13,
-  '호두': 14,
-  '닭고기': 15,
-  '쇠고기': 16,
-  '오징어': 17,
-  '조개류': 18,
-};
+// ALLERGY_SHORT_NAMES 기반으로 이름→번호 역매핑
+const allergenNumberMap: Record<string, number> = Object.fromEntries(
+  Object.entries(ALLERGY_SHORT_NAMES).map(([code, name]) => [name, Number(code)])
+);
 
 function parseNums(raw: string | undefined): number[] {
   if (!raw) return [];
@@ -70,6 +63,7 @@ export function SimpleMealDetailModal({
   date,
   mealType,
   meals,
+  nutrition,
   darkMode = false,
   userAllergies = [],
 }: SimpleMealDetailModalProps) {
@@ -168,6 +162,31 @@ export function SimpleMealDetailModal({
             </div>
           )}
         </div>
+
+        {/* 영양 정보 */}
+        {nutrition && (
+          <div className={`px-6 py-4 border-t ${darkMode ? 'border-gray-700' : 'border-gray-200'}`}>
+            <h3 className={`font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'} mb-3`}>영양 정보</h3>
+            <div className="grid grid-cols-4 gap-2">
+              <div className={`flex flex-col items-center rounded-lg py-3 ${darkMode ? 'bg-gray-700' : 'bg-orange-50'}`}>
+                <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>칼로리</span>
+                <span className={`text-sm font-bold ${darkMode ? 'text-orange-300' : 'text-orange-600'}`}>{nutrition.calories.toLocaleString()}kcal</span>
+              </div>
+              <div className={`flex flex-col items-center rounded-lg py-3 ${darkMode ? 'bg-gray-700' : 'bg-blue-50'}`}>
+                <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>탄수화물</span>
+                <span className={`text-sm font-bold ${darkMode ? 'text-blue-300' : 'text-blue-600'}`}>{nutrition.carbs.toLocaleString()}g</span>
+              </div>
+              <div className={`flex flex-col items-center rounded-lg py-3 ${darkMode ? 'bg-gray-700' : 'bg-green-50'}`}>
+                <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>단백질</span>
+                <span className={`text-sm font-bold ${darkMode ? 'text-green-300' : 'text-green-600'}`}>{nutrition.protein.toLocaleString()}g</span>
+              </div>
+              <div className={`flex flex-col items-center rounded-lg py-3 ${darkMode ? 'bg-gray-700' : 'bg-purple-50'}`}>
+                <span className={`text-xs ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>지방</span>
+                <span className={`text-sm font-bold ${darkMode ? 'text-purple-300' : 'text-purple-600'}`}>{nutrition.fat.toLocaleString()}g</span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* 알레르기 표시 번호 안내 */}
         <div className={`px-6 py-4 border-t ${darkMode ? 'border-gray-700 bg-gray-750' : 'border-gray-200 bg-blue-50'}`}>

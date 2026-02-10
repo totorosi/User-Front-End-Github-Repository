@@ -1,8 +1,10 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
+import lunchImg from '../assets/20260224_lunch.png';
 import AuthHeader from './AuthHeader';
 import { login as apiLogin } from '../api/auth';
 import { Footer } from './Footer';
+import { useErrorModal } from '../contexts/ErrorModalContext';
 
 type PageType =
   | 'login'
@@ -19,6 +21,7 @@ interface LoginPageProps {
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export default function LoginPage({ onNavigate }: LoginPageProps) {
+  const { showError } = useErrorModal();
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
@@ -38,12 +41,12 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
     const pw = password.trim();
 
     if (!email || !pw) {
-      alert('이메일과 비밀번호를 입력해주세요.');
+      showError('이메일과 비밀번호를 입력해주세요.');
       return;
     }
 
     if (!EMAIL_REGEX.test(email)) {
-      alert('이메일 형식으로 입력해주세요. (예: example@domain.com)');
+      showError('이메일 형식으로 입력해주세요. (예: example@domain.com)');
       return;
     }
 
@@ -54,7 +57,7 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
       localStorage.setItem('username', email);
       onNavigate('app');
     } catch (err: any) {
-      alert(err?.message || '로그인에 실패했습니다.');
+      showError(err?.message || '로그인에 실패했습니다.');
     } finally {
       setIsLoading(false);
     }
@@ -80,8 +83,8 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
                   요일 탭으로 빠르게 중식/석식 정보를 확인할 수 있어요.
                 </div>
 
-                <div className="auth-sample rounded-xl border bg-gray-100 h-52 flex items-center justify-center text-gray-500 text-sm">
-                  (예시 화면)
+                <div className="auth-sample rounded-xl border bg-white overflow-hidden">
+                  <img src={lunchImg} alt="급식 예시" className="w-full h-52 object-contain" />
                 </div>
               </div>
             </div>

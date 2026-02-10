@@ -34,12 +34,24 @@ interface MealItem {
   allergens?: string;
 }
 
+interface NutritionInfo {
+  calories: number;
+  carbs: number;
+  protein: number;
+  fat: number;
+}
+
 interface DayMeal {
   date: string; // YYYY-MM-DD
   dayOfWeek: string;
   lunch: MealItem[];
   dinner: MealItem[];
+  lunchNutrition?: NutritionInfo;
+  dinnerNutrition?: NutritionInfo;
 }
+
+// 메뉴 슬롯 수 (밥, 국, 주찬1, 주찬2, 반찬, 김치, 디저트)
+const MEAL_SLOT_COUNT = 7;
 
 interface MenuScheduleProps {
   darkMode?: boolean;
@@ -123,8 +135,12 @@ export function MenuSchedule({ darkMode = false, userAllergies }: MenuSchedulePr
             allergens: (it.allergens || []).map(String).join('.'),
           }));
 
-          if (m.meal_type === 'LUNCH') meals[dateStr].lunch = items;
-          if (m.meal_type === 'DINNER') meals[dateStr].dinner = items;
+          const nut = m.nutrition
+            ? { calories: m.nutrition.kcal, carbs: m.nutrition.carb, protein: m.nutrition.prot, fat: m.nutrition.fat }
+            : undefined;
+
+          if (m.meal_type === 'LUNCH') { meals[dateStr].lunch = items; meals[dateStr].lunchNutrition = nut; }
+          if (m.meal_type === 'DINNER') { meals[dateStr].dinner = items; meals[dateStr].dinnerNutrition = nut; }
         }
 
         if (!mounted) return;
@@ -391,6 +407,9 @@ export function MenuSchedule({ darkMode = false, userAllergies }: MenuSchedulePr
                             • {item.name}
                           </div>
                         ))}
+                        {Array.from({ length: Math.max(0, MEAL_SLOT_COUNT - dayMeal.lunch.length) }).map((_, i) => (
+                          <div key={`lp-${i}`} className="text-xs invisible">·</div>
+                        ))}
                       </div>
                     </button>
                   ) : (
@@ -411,6 +430,11 @@ export function MenuSchedule({ darkMode = false, userAllergies }: MenuSchedulePr
                         중식
                       </div>
                       <div className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>식단 없음</div>
+                      <div className="space-y-0.5">
+                        {Array.from({ length: MEAL_SLOT_COUNT - 1 }).map((_, i) => (
+                          <div key={`lpe-${i}`} className="text-xs invisible">·</div>
+                        ))}
+                      </div>
                     </button>
                   )}
 
@@ -583,6 +607,9 @@ export function MenuSchedule({ darkMode = false, userAllergies }: MenuSchedulePr
                                           • {item.name}
                                         </div>
                                       ))}
+                                      {Array.from({ length: Math.max(0, MEAL_SLOT_COUNT - dayMeal.lunch.length) }).map((_, i) => (
+                                        <div key={`lp-${i}`} className="text-xs invisible">·</div>
+                                      ))}
                                     </div>
                                   </button>
                                 ) : (
@@ -603,6 +630,11 @@ export function MenuSchedule({ darkMode = false, userAllergies }: MenuSchedulePr
                                       중식
                                     </div>
                                     <div className={`text-xs ${darkMode ? 'text-gray-500' : 'text-gray-400'}`}>식단 없음</div>
+                                    <div className="space-y-0.5">
+                                      {Array.from({ length: MEAL_SLOT_COUNT - 1 }).map((_, i) => (
+                                        <div key={`lpe-${i}`} className="text-xs invisible">·</div>
+                                      ))}
+                                    </div>
                                   </button>
                                 )}
 
@@ -687,8 +719,9 @@ export function MenuSchedule({ darkMode = false, userAllergies }: MenuSchedulePr
           date={selectedDate.date}
           mealType={selectedMealType}
           meals={selectedMealType === 'lunch' ? selectedDate.lunch : selectedDate.dinner}
+          nutrition={selectedMealType === 'lunch' ? selectedDate.lunchNutrition : selectedDate.dinnerNutrition}
           darkMode={darkMode}
-          userAllergies={userAllergies}   // ✅ 추가
+          userAllergies={userAllergies}
         />
       )}
 

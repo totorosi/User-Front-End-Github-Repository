@@ -5,6 +5,7 @@ import { Footer } from './Footer';
 import { toast } from 'sonner@2.0.3';
 import { findStudentTempPassword } from '../api/auth';
 import { formatPhoneNumber } from '../utils/phone';
+import { useErrorModal } from '../contexts/ErrorModalContext';
 
 type PageType =
   | 'login'
@@ -18,6 +19,7 @@ interface FindPasswordPageProps {
 }
 
 export default function FindPasswordPage({ onNavigate }: FindPasswordPageProps) {
+  const { showError } = useErrorModal();
   const [username, setUsername] = useState(''); // 아이디(이메일)
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -33,7 +35,7 @@ export default function FindPasswordPage({ onNavigate }: FindPasswordPageProps) 
     const p = phone.trim();
 
     if (!u || !n || !p) {
-      toast.error('아이디(이메일), 이름, 전화번호를 모두 입력해주세요.');
+      showError('아이디(이메일), 이름, 전화번호를 모두 입력해주세요.');
       return;
     }
 
@@ -47,7 +49,7 @@ export default function FindPasswordPage({ onNavigate }: FindPasswordPageProps) 
         '';
 
       if (!temp) {
-        toast.error('임시 비밀번호를 받지 못했습니다. (응답 형식을 확인해주세요)');
+        showError('임시 비밀번호를 받지 못했습니다. (응답 형식을 확인해주세요)');
         return;
       }
 
@@ -60,7 +62,7 @@ export default function FindPasswordPage({ onNavigate }: FindPasswordPageProps) 
 
       toast.success('임시 비밀번호가 발급되었습니다.');
     } catch (err: any) {
-      toast.error(err?.message || '비밀번호 찾기에 실패했습니다.');
+      showError(err?.message || '비밀번호 찾기에 실패했습니다.');
     } finally {
       setIsSubmitting(false);
     }
@@ -72,7 +74,7 @@ export default function FindPasswordPage({ onNavigate }: FindPasswordPageProps) 
       await navigator.clipboard.writeText(temporaryPassword);
       toast.success('임시 비밀번호가 복사되었습니다.');
     } catch {
-      toast.error('복사에 실패했습니다. 직접 선택해 복사해주세요.');
+      showError('복사에 실패했습니다. 직접 선택해 복사해주세요.');
     }
   };
 

@@ -182,7 +182,7 @@ export default function ProfileEdit() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-6">
+    <div className="space-y-6">
       <h1 className="text-xl font-semibold mb-6">회원정보 수정</h1>
 
       {error && <div className="mb-4 text-sm text-red-600">{error}</div>}
@@ -190,7 +190,7 @@ export default function ProfileEdit() {
       {/* ======================
           섹션 1) 회원정보 수정
          ====================== */}
-      <section className="mb-8 border border-gray-200 rounded-xl p-5">
+      <section className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-base font-semibold mb-4">회원정보 수정</h2>
 
         <div className="mb-4">
@@ -264,7 +264,7 @@ export default function ProfileEdit() {
       {/* ======================
           섹션 2) 알레르기 정보 수정
          ====================== */}
-      <section className="mb-8 border border-gray-200 rounded-xl p-5">
+      <section className="bg-white rounded-lg shadow-md p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-semibold">알레르기 정보 수정</h2>
           <button
@@ -317,7 +317,7 @@ export default function ProfileEdit() {
       {/* ======================
           섹션 3) 비밀번호 변경
          ====================== */}
-      <section className="mb-8 border border-gray-200 rounded-xl p-5">
+      <section className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-base font-semibold mb-4">비밀번호 변경</h2>
 
         <div className="mb-3">
@@ -367,7 +367,7 @@ export default function ProfileEdit() {
       {/* ======================
           섹션 4) 회원 탈퇴
          ====================== */}
-      <section className="border border-red-200 rounded-xl p-5">
+      <section className="bg-white rounded-lg shadow-md p-6">
         <h2 className="text-base font-semibold mb-2 text-red-600">회원 탈퇴</h2>
         <p className="text-sm text-gray-600 mb-4">
           회원 탈퇴 시 계정 정보가 삭제되며, 되돌릴 수 없습니다.

@@ -28,6 +28,9 @@ export interface AllergyItem {
   enum: AllergyEnum;
 }
 
+/** 코드 → 짧은 이름 매핑 (괄호 부분 제거, 알레르기 비교용) */
+export const ALLERGY_SHORT_NAMES: Record<number, string> = {};
+
 export const ALLERGY_ITEMS: AllergyItem[] = [
   { code: 1, label: '난류(가금류)', enum: AllergyEnum.EGG },
   { code: 2, label: '우유', enum: AllergyEnum.MILK },
@@ -49,3 +52,8 @@ export const ALLERGY_ITEMS: AllergyItem[] = [
   { code: 18, label: '조개류(굴,전복,홍합포함)', enum: AllergyEnum.SHELLFISH },
   { code: 19, label: '잣', enum: AllergyEnum.PINE_NUT },
 ];
+
+// 괄호 제거한 짧은 이름 매핑 초기화
+ALLERGY_ITEMS.forEach((a) => {
+  ALLERGY_SHORT_NAMES[a.code] = a.label.replace(/\(.*\)$/, '').trim();
+});

@@ -1,5 +1,6 @@
 import { X, AlertTriangle } from 'lucide-react';
 import { MenuItem, NutritionInfo } from '../data/mealData';
+import { ALLERGY_SHORT_NAMES } from '../utils/allergy';
 
 interface MealDetailModalProps {
   isOpen: boolean;
@@ -13,27 +14,10 @@ interface MealDetailModalProps {
   userAllergies: string[]; // ["대두","밀"] 또는 ["5","6"] 둘 다 대응
 }
 
-// 알레르기 유발 식품 번호 매핑
-const allergenNumberMap: Record<string, number> = {
-  '난류': 1,
-  '우유': 2,
-  '메밀': 3,
-  '땅콩': 4,
-  '대두': 5,
-  '밀': 6,
-  '고등어': 7,
-  '게': 8,
-  '새우': 9,
-  '돼지고기': 10,
-  '복숭아': 11,
-  '토마토': 12,
-  '아황산류': 13,
-  '호두': 14,
-  '닭고기': 15,
-  '쇠고기': 16,
-  '오징어': 17,
-  '조개류': 18,
-};
+// ALLERGY_SHORT_NAMES 기반으로 이름→번호 역매핑
+const allergenNumberMap: Record<string, number> = Object.fromEntries(
+  Object.entries(ALLERGY_SHORT_NAMES).map(([code, name]) => [name, Number(code)])
+);
 
 function parseAllergenNumbers(raw: string | undefined): number[] {
   if (!raw) return [];
@@ -166,22 +150,22 @@ export function MealDetailModal({
         {nutrition && (
           <div className="px-6 py-4 border-t border-gray-200">
             <h3 className="font-semibold text-gray-800 mb-3">영양 정보</h3>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500">총열량</p>
-                <p className="text-lg font-semibold text-gray-800">{nutrition.calories} kcal</p>
+            <div className="grid grid-cols-4 gap-2">
+              <div className="flex flex-col items-center rounded-lg py-3 bg-orange-50">
+                <span className="text-xs text-gray-500">칼로리</span>
+                <span className="text-sm font-bold text-orange-600">{nutrition.calories.toLocaleString()}kcal</span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500">탄수화물</p>
-                <p className="text-lg font-semibold text-gray-800">{nutrition.carbs} g</p>
+              <div className="flex flex-col items-center rounded-lg py-3 bg-blue-50">
+                <span className="text-xs text-gray-500">탄수화물</span>
+                <span className="text-sm font-bold text-blue-600">{nutrition.carbs.toLocaleString()}g</span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500">단백질</p>
-                <p className="text-lg font-semibold text-gray-800">{nutrition.protein} g</p>
+              <div className="flex flex-col items-center rounded-lg py-3 bg-green-50">
+                <span className="text-xs text-gray-500">단백질</span>
+                <span className="text-sm font-bold text-green-600">{nutrition.protein.toLocaleString()}g</span>
               </div>
-              <div className="bg-gray-50 rounded-lg p-3">
-                <p className="text-xs text-gray-500">지방</p>
-                <p className="text-lg font-semibold text-gray-800">{nutrition.fat} g</p>
+              <div className="flex flex-col items-center rounded-lg py-3 bg-purple-50">
+                <span className="text-xs text-gray-500">지방</span>
+                <span className="text-sm font-bold text-purple-600">{nutrition.fat.toLocaleString()}g</span>
               </div>
             </div>
           </div>

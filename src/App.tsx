@@ -5,8 +5,10 @@ import FindIdPage from './components/FindIdPage';
 import FindPasswordPage from './components/FindPasswordPage';
 import StudentSignUpPage from './components/StudentSignUpPage';
 import MainApp from './MainApp';
+import PolicyPage from './pages/PolicyPage';
 import { Toaster } from './components/ui/sonner';
 import { clearAccessToken, getAccessToken } from './api/http';
+import { ErrorModalProvider } from './contexts/ErrorModalContext';
 
 /**
  * Hash Router (react-router-dom 없이)
@@ -22,6 +24,7 @@ export type RouteKey =
   | 'findId'
   | 'findPassword'
   | 'signUpStudent'
+  | 'policy'
   | 'app';
 
 function readHash(): RouteKey {
@@ -32,6 +35,7 @@ function readHash(): RouteKey {
     case 'findId':
     case 'findPassword':
     case 'signUpStudent':
+    case 'policy':
     case 'app':
       return key;
     default:
@@ -59,6 +63,14 @@ export default function App() {
       if (!hasToken && next === 'app') {
         go('login', { replace: true });
         setRoute('login');
+        return;
+      }
+
+      // ✅ 로그인 상태에서 auth 페이지로 뒤로가기하면 앱으로 되돌림
+      const authPages: RouteKey[] = ['login', 'findId', 'findPassword', 'signUpStudent'];
+      if (hasToken && authPages.includes(next)) {
+        go('app', { replace: true });
+        setRoute('app');
         return;
       }
 
@@ -105,6 +117,8 @@ export default function App() {
         return <FindPasswordPage onNavigate={onNavigate as any} />;
       case 'signUpStudent':
         return <StudentSignUpPage onNavigate={onNavigate as any} />;
+      case 'policy':
+        return <PolicyPage />;
       case 'app':
         return <MainApp onLogout={handleLogout} />;
       default:
@@ -113,9 +127,9 @@ export default function App() {
   })();
 
   return (
-    <>
+    <ErrorModalProvider>
       <Toaster />
       {view}
-    </>
+    </ErrorModalProvider>
   );
 }

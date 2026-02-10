@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Star, Send, CheckCircle, Clock, AlertCircle, Bug } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogAction } from '../components/ui/alert-dialog';
 import { toast } from 'sonner@2.0.3';
+import { useErrorModal } from '../contexts/ErrorModalContext';
 import { Switch } from '../components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { getDailyMeal } from '../api/mealplan';
@@ -43,7 +44,21 @@ function StarRating({
   setHover: (n: number) => void;
   disabled?: boolean;
 }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const isDragging = useRef(false);
   const displayRating = hover || rating;
+
+  /** 컨테이너 내 x좌표 → 0.5 단위 별점 */
+  const xToRating = useCallback((clientX: number): number => {
+    const el = containerRef.current;
+    if (!el) return 0;
+    const rect = el.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, x / rect.width));
+    // 0.5 단위 반올림, 최소 0.5
+    const raw = ratio * 5;
+    return Math.max(0.5, Math.round(raw * 2) / 2);
+  }, []);
 
   const handleClick = (index: number, isHalf: boolean) => {
     if (disabled) return;
@@ -59,6 +74,45 @@ function StarRating({
     const hoverValue = starIndex + (isLeftHalf ? 0.5 : 1);
     setHover(hoverValue);
   };
+
+  /* ── 모바일 터치 슬라이드 ── */
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
+    if (disabled) return;
+    isDragging.current = true;
+    const val = xToRating(e.touches[0].clientX);
+    setHover(val);
+  }, [disabled, xToRating, setHover]);
+
+  // touchmove는 { passive: false }로 등록해야 preventDefault 가능
+  const hoverRef = useRef(hover);
+  hoverRef.current = hover;
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (disabled || !isDragging.current) return;
+      e.preventDefault();
+      const val = xToRating(e.touches[0].clientX);
+      setHover(val);
+    };
+
+    const handleTouchEnd = () => {
+      if (disabled || !isDragging.current) return;
+      isDragging.current = false;
+      if (hoverRef.current > 0) setRating(hoverRef.current);
+      setHover(0);
+    };
+
+    el.addEventListener('touchmove', handleTouchMove, { passive: false });
+    el.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      el.removeEventListener('touchmove', handleTouchMove);
+      el.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [disabled, xToRating, setHover, setRating]);
 
   const renderStar = (starIndex: number) => {
     const fillValue = displayRating - starIndex;
@@ -109,7 +163,11 @@ function StarRating({
         <p className="text-sm text-gray-600">별점을 선택해주세요 (0.5점 단위)</p>
       </div>
 
-      <div className="flex justify-center gap-1">
+      <div
+        ref={containerRef}
+        className="flex justify-center gap-1 touch-none"
+        onTouchStart={onTouchStart}
+      >
         {[0, 1, 2, 3, 4].map((i) => renderStar(i))}
       </div>
 
@@ -196,47 +254,51 @@ function EvaluationContent({
         )}
       </div>
 
-      <StarRating
-        rating={rating}
-        setRating={setRating}
-        label="별점 평가"
-        hover={hover}
-        setHover={setHover}
-        disabled={isDisabled || isSubmitted}
-      />
+      {!isDisabled && (
+        <>
+          <StarRating
+            rating={rating}
+            setRating={setRating}
+            label="별점 평가"
+            hover={hover}
+            setHover={setHover}
+            disabled={isSubmitted}
+          />
 
-      <div className="space-y-3">
-        <h3 className="font-semibold text-gray-700">추가 의견</h3>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="급식에 대한 의견을 남겨주세요 (필수)"
-          maxLength={200}
-          disabled={isDisabled || isSubmitted}
-          className={`w-full h-24 px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-            isDisabled || isSubmitted ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
-          }`}
-        />
-        <div className="flex justify-between text-xs text-gray-500">
-          <span>{comment.length}/200</span>
-          {!canSubmit && !isDisabled && !isSubmitted ? (
-            <span className="text-red-500">별점과 의견을 모두 입력해주세요</span>
-          ) : null}
-        </div>
-      </div>
+          <div className="space-y-3">
+            <h3 className="font-semibold text-gray-700">추가 의견</h3>
+            <textarea
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              placeholder="급식에 대한 의견을 남겨주세요 (필수)"
+              maxLength={200}
+              disabled={isSubmitted}
+              className={`w-full h-24 px-4 py-3 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                isSubmitted ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'
+              }`}
+            />
+            <div className="flex justify-between text-xs text-gray-500">
+              <span>{comment.length}/200</span>
+              {!canSubmit && !isSubmitted ? (
+                <span className="text-red-500">별점과 의견을 모두 입력해주세요</span>
+              ) : null}
+            </div>
+          </div>
 
-      <button
-        onClick={onSubmit}
-        disabled={!canSubmit || isDisabled || isSubmitted}
-        className={`w-full px-6 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition ${
-          canSubmit && !isDisabled && !isSubmitted
-            ? 'bg-teal-500 text-white hover:bg-teal-600'
-            : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-        }`}
-      >
-        <Send className="w-5 h-5" />
-        {isSubmitted ? '제출 완료' : `${titleText} 평가 제출`}
-      </button>
+          <button
+            onClick={onSubmit}
+            disabled={!canSubmit || isSubmitted}
+            className={`w-full px-6 py-4 rounded-lg font-semibold flex items-center justify-center gap-2 transition ${
+              canSubmit && !isSubmitted
+                ? 'bg-teal-500 text-white hover:bg-teal-600'
+                : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+            }`}
+          >
+            <Send className="w-5 h-5" />
+            {isSubmitted ? '제출 완료' : `${titleText} 평가 제출`}
+          </button>
+        </>
+      )}
     </div>
   );
 }
@@ -271,6 +333,7 @@ const getDefaultTab = (): 'lunch' | 'dinner' => {
 };
 
 export function Satisfaction() {
+  const { showError } = useErrorModal();
   const [activeTab, setActiveTab] = useState<'lunch' | 'dinner'>(getDefaultTab());
   
   // 개발 모드 (상태 강제 설정용)
@@ -390,7 +453,7 @@ export function Satisfaction() {
     }
 
     if (!todayMenu.lunch || todayMenu.lunch.length === 0) {
-      toast.error('오늘 중식 식단 정보를 찾지 못했습니다.\n(식단이 없거나 조회에 실패했습니다)');
+      showError('오늘 중식 식단 정보를 찾지 못했습니다.\n(식단이 없거나 조회에 실패했습니다)');
       return;
     }
 
@@ -421,7 +484,7 @@ export function Satisfaction() {
         return;
       }
 
-      toast.error(e?.message || '중식 평가 제출에 실패했습니다.');
+      showError(e?.message || '중식 평가 제출에 실패했습니다.');
     }
   };
 
@@ -432,12 +495,7 @@ export function Satisfaction() {
     }
 
     if (!todayMenu.dinner || todayMenu.dinner.length === 0) {
-      toast.error('오늘 석식 식단 정보를 찾지 못했습니다.\n(식단이 없거나 조회에 실패했습니다)');
-      return;
-    }
-
-    if (!todayMenu.dinner || todayMenu.dinner.length === 0) {
-      toast.error('오늘 석식 식단 정보를 찾지 못했습니다.\n(식단이 없거나 조회에 실패했습니다)');
+      showError('오늘 석식 식단 정보를 찾지 못했습니다.\n(식단이 없거나 조회에 실패했습니다)');
       return;
     }
 
@@ -467,7 +525,7 @@ export function Satisfaction() {
         return;
       }
 
-      toast.error(e?.message || '석식 평가 제출에 실패했습니다.');
+      showError(e?.message || '석식 평가 제출에 실패했습니다.');
     }
   };
 
@@ -479,7 +537,7 @@ export function Satisfaction() {
       </div>
 
       {/* 카드 컨테이너 */}
-      <div className="bg-white rounded-lg shadow-md p-6 max-w-3xl mx-auto">
+      <div className="bg-white rounded-lg shadow-md p-6">
         {/* 탭 UI - 카드 안쪽 상단 */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6 h-11">

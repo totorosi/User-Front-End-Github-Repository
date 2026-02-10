@@ -23,6 +23,8 @@ import {
 import { changePassword, getStudentMeCache, updateStudentMe } from './api/student';
 import { toast } from 'sonner@2.0.3';
 import { checkPasswordPolicy, PASSWORD_RULE_TEXT, PASSWORD_RULE_TOAST } from './utils/passwordPolicy';
+import { useErrorModal } from './contexts/ErrorModalContext';
+import { ALLERGY_ITEMS, ALLERGY_SHORT_NAMES } from './utils/allergy';
 
 interface MainAppProps {
   onLogout: () => void;
@@ -70,22 +72,9 @@ function listItemToBoardPost(it: BoardListItem): BoardPost {
 }
 
 export default function MainApp({ onLogout }: MainAppProps) {
+  const { showError } = useErrorModal();
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [showSidebar, setShowSidebar] = useState(false);
-  const allergyItems = [
-    { id: 1, name: '난류' },
-    { id: 2, name: '우유' },
-    { id: 3, name: '메밀' },
-    { id: 4, name: '땅콩' },
-    { id: 5, name: '대두' },
-    { id: 6, name: '밀' },
-    { id: 7, name: '고등어' },
-    { id: 8, name: '게' },
-    { id: 9, name: '새우' },
-    { id: 10, name: '돼지고기' },
-    { id: 11, name: '복숭아' },
-    { id: 12, name: '토마토' },
-  ];
 
   const [userAllergyCodes, setUserAllergyCodes] = useState<number[]>([]);
   const [userAllergies, setUserAllergies] = useState<string[]>([]);
@@ -133,7 +122,7 @@ export default function MainApp({ onLogout }: MainAppProps) {
     setCurrentUserName(me.name || '');
     setUserAllergyCodes(me.allergy_codes || []);
     const names = (me.allergy_codes || [])
-      .map((code) => allergyItems.find((a) => a.id === code)?.name)
+      .map((code) => ALLERGY_SHORT_NAMES[code])
       .filter(Boolean) as string[];
     setUserAllergies(names);
   }, []);
@@ -233,7 +222,7 @@ export default function MainApp({ onLogout }: MainAppProps) {
             <button
               onClick={() => {
                 if (!pwCurrent.trim()) {
-                  toast.error('현재 비밀번호를 입력해주세요.');
+                  showError('현재 비밀번호를 입력해주세요.');
                   return;
                 }
                 setPwNew('');
@@ -285,17 +274,17 @@ export default function MainApp({ onLogout }: MainAppProps) {
             <button
               onClick={async () => {
                 if (!pwNew.trim() || !pwConfirm.trim()) {
-                  toast.error('새 비밀번호를 입력해주세요.');
+                  showError('새 비밀번호를 입력해주세요.');
                   return;
                 }
                 const policy = checkPasswordPolicy(pwNew);
                 if (!policy.ok) {
-                  toast.error(PASSWORD_RULE_TOAST);
+                  showError(PASSWORD_RULE_TOAST);
                   return;
                 }
 
                 if (pwNew !== pwConfirm) {
-                  toast.error('새 비밀번호가 일치하지 않습니다.');
+                  showError('새 비밀번호가 일치하지 않습니다.');
                   return;
                 }
                 try {
@@ -303,7 +292,7 @@ export default function MainApp({ onLogout }: MainAppProps) {
                   toast.success('비밀번호가 변경되었습니다!');
                   setCurrentPage('profile');
                 } catch (e: any) {
-                  toast.error(e?.message || '비밀번호 변경에 실패했습니다.');
+                  showError(e?.message || '비밀번호 변경에 실패했습니다.');
                 }
               }}
               className="w-full px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition"
@@ -330,24 +319,24 @@ export default function MainApp({ onLogout }: MainAppProps) {
                 해당하는 알레르기 항목을 모두 선택해주세요.
               </p>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {allergyItems.map((a) => (
-                  <label key={a.id} className={`flex items-center gap-2 p-3 border ${darkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-200 hover:bg-gray-50'} rounded-lg cursor-pointer`}>
+                {ALLERGY_ITEMS.map((a) => (
+                  <label key={a.code} className={`flex items-center gap-2 p-3 border ${darkMode ? 'border-gray-600 hover:bg-gray-700' : 'border-gray-200 hover:bg-gray-50'} rounded-lg cursor-pointer`}>
                     <input
                       type="checkbox"
-                      checked={userAllergyCodes.includes(a.id)}
+                      checked={userAllergyCodes.includes(a.code)}
                       onChange={(e) => {
                         const nextCodes = e.target.checked
-                          ? Array.from(new Set([...userAllergyCodes, a.id]))
-                          : userAllergyCodes.filter((c) => c !== a.id);
+                          ? Array.from(new Set([...userAllergyCodes, a.code]))
+                          : userAllergyCodes.filter((c) => c !== a.code);
                         setUserAllergyCodes(nextCodes);
                         const nextNames = nextCodes
-                          .map((code) => allergyItems.find((x) => x.id === code)?.name)
+                          .map((code) => ALLERGY_SHORT_NAMES[code])
                           .filter(Boolean) as string[];
                         setUserAllergies(nextNames);
                       }}
                       className="rounded text-teal-500"
                     />
-                    <span className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{a.name}</span>
+                    <span className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'}`}>{a.code}. {a.label}</span>
                   </label>
                 ))}
               </div>
@@ -359,7 +348,7 @@ export default function MainApp({ onLogout }: MainAppProps) {
                       toast.success('알레르기 정보가 저장되었습니다!');
                       setCurrentPage('profile');
                     } catch (e: any) {
-                      toast.error(e?.message || '알레르기 정보 저장에 실패했습니다.');
+                      showError(e?.message || '알레르기 정보 저장에 실패했습니다.');
                     }
                   }}
                   className="flex-1 px-6 py-3 bg-teal-500 text-white rounded-lg hover:bg-teal-600 transition"

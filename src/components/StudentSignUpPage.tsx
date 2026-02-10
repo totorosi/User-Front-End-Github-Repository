@@ -10,6 +10,7 @@ import { toast } from 'sonner@2.0.3';
 import { formatPhoneNumber } from '../utils/phone';
 import { checkPasswordPolicy, PASSWORD_RULE_TEXT, PASSWORD_RULE_TOAST } from '../utils/passwordPolicy';
 import { ALLERGY_ITEMS } from '../utils/allergy';
+import { useErrorModal } from '../contexts/ErrorModalContext';
 
 type PageType =
     | 'login'
@@ -26,6 +27,7 @@ interface StudentSignUpPageProps {
 // ✅ 학교는 나이스 검색 API로 가져온다 (school_id 없는 학교는 선택 불가)
 
 export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps) {
+    const { showError } = useErrorModal();
     const [step, setStep] = useState(1); // 1 or 2
 
     const [formData, setFormData] = useState({
@@ -86,7 +88,7 @@ export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps
     const handleCheckEmail = async () => {
         const email = formData.email.trim();
         if (!email) {
-            toast.error('이메일을 입력해주세요.');
+            showError('이메일을 입력해주세요.');
             return;
         }
         try {
@@ -95,12 +97,12 @@ export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps
             setEmailChecked(true);
             setEmailAvailable(!isDuplicate);
             if (isDuplicate) {
-                toast.error('이미 사용 중인 이메일입니다.');
+                showError('이미 사용 중인 이메일입니다.');
             } else {
                 toast.success('사용 가능한 이메일입니다.');
             }
         } catch {
-            toast.error('중복 확인에 실패했습니다. 다시 시도해주세요.');
+            showError('중복 확인에 실패했습니다. 다시 시도해주세요.');
         } finally {
             setEmailChecking(false);
         }
@@ -136,12 +138,12 @@ export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps
         e.preventDefault();
 
         if (formData.password !== formData.confirmPassword) {
-            toast.error('비밀번호가 일치하지 않습니다.');
+            showError('비밀번호가 일치하지 않습니다.');
             return;
         }
 
         if (!isStep1Valid()) {
-            toast.error('필수 정보를 모두 입력해주세요.');
+            showError('필수 정보를 모두 입력해주세요.');
             return;
         }
 
@@ -156,13 +158,13 @@ export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps
         e.preventDefault();
 
         if (!agreedToTerms || !agreedToPrivacy) {
-            toast.error('필수 약관에 동의해주세요.');
+            showError('필수 약관에 동의해주세요.');
             return;
         }
 
         // ✅ 학교 선택 필수 (school_id가 있는 학교만 가입 가능)
         if (!selectedSchool?.school_id) {
-            toast.error('학교를 검색해서 목록에서 선택해주세요. (가입 가능한 학교만 표시됩니다)');
+            showError('학교를 검색해서 목록에서 선택해주세요. (가입 가능한 학교만 표시됩니다)');
             return;
         }
 
@@ -174,33 +176,33 @@ export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps
         const class_no = Number(formData.class);
 
         if (!username || !pw || !name) {
-            toast.error('이메일(아이디), 비밀번호, 이름은 필수입니다.');
+            showError('이메일(아이디), 비밀번호, 이름은 필수입니다.');
             return;
         }
 
         if (!phone) {
-            toast.error('전화번호는 필수입니다.');
+            showError('전화번호는 필수입니다.');
             return;
         }
 
         if (!Number.isFinite(grade) || grade <= 0) {
-            toast.error('학년을 선택해주세요.');
+            showError('학년을 선택해주세요.');
             return;
         }
 
         if (!Number.isFinite(class_no) || class_no <= 0) {
-            toast.error('반을 입력해주세요.');
+            showError('반을 입력해주세요.');
             return;
         }
 
         const policy = checkPasswordPolicy(pw);
         if (!policy.ok) {
-            toast.error(PASSWORD_RULE_TOAST);
+            showError(PASSWORD_RULE_TOAST);
             return;
         }
 
         if (pw !== formData.confirmPassword) {
-            toast.error('비밀번호가 일치하지 않습니다.');
+            showError('비밀번호가 일치하지 않습니다.');
             return;
         }
 
@@ -217,11 +219,11 @@ export default function StudentSignUpPage({ onNavigate }: StudentSignUpPageProps
                 class_no,
                 allergy_codes: selectedAllergies,
             });
-            toast.error('회원가입이 완료되었습니다! 이제 로그인해주세요.');
+            toast.success('회원가입이 완료되었습니다! 이제 로그인해주세요.');
             onNavigate('login');
         } catch (err: any) {
             const msg = err?.message || '회원가입에 실패했습니다.';
-            alert(msg);
+            showError(msg);
         } finally {
             setIsSubmitting(false);
         }
