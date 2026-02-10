@@ -235,7 +235,7 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
 
                                 <button
                                     onClick={() => openModal('lunch')}
-                                    className={`w-full flex-1 flex flex-col ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg p-4 border-2 border-orange-200 hover:border-orange-300 hover:shadow-md transition cursor-pointer text-left`}
+                                    className={`w-full flex-1 flex flex-col ${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg p-4 border-2 border-orange-200 hover:border-orange-300 hover:shadow-md transition cursor-pointer text-left`}
                                 >
                                     <img src={lunchImg} alt="중식 이미지" className="w-full h-60 object-contain rounded-lg mb-3" />
                                     <div className="space-y-1 mb-3 flex-1">
@@ -292,7 +292,7 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
 
                                 <button
                                     onClick={() => openModal('dinner')}
-                                    className={`w-full flex-1 flex flex-col ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg p-4 border-2 border-blue-200 hover:border-blue-300 hover:shadow-md transition cursor-pointer text-left`}
+                                    className={`w-full flex-1 flex flex-col ${darkMode ? 'bg-gray-700' : 'bg-white'} rounded-lg p-4 border-2 border-blue-200 hover:border-blue-300 hover:shadow-md transition cursor-pointer text-left`}
                                 >
                                     <img src={dinnerImg} alt="석식 이미지" className="w-full h-57 object-contain rounded-lg mb-3" />
                                     <div className="space-y-1 mb-3 flex-1">
