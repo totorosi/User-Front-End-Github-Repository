@@ -102,6 +102,25 @@ export async function signup(payload: {
 }
 
 /* ======================
+   ID(이메일) 중복 체크
+   ====================== */
+export async function checkDuplicateEmail(email: string): Promise<boolean> {
+  const data = await requestJson<any>("GET", `/api/auth/student/check-email?email=${encodeURIComponent(email)}`, {
+    headers: {
+      "API-KEY": API_KEY,
+      "api-key": API_KEY,
+    },
+    skipAuth: true,
+  });
+  // 백엔드 응답: { duplicate: true/false } 또는 { available: true/false } 등
+  if (typeof data === 'boolean') return data;
+  if (data?.duplicate !== undefined) return data.duplicate;
+  if (data?.available !== undefined) return !data.available;
+  if (data?.exists !== undefined) return data.exists;
+  return false;
+}
+
+/* ======================
    아이디 찾기 (findId)
    - 환경마다 경로가 달라서 "있는 것"을 맞출 때까지 순차 시도
    ====================== */

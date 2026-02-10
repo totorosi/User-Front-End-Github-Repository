@@ -161,7 +161,7 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
     const allergenList = allergens.split(',').map((a) => a.trim());
 
     return (
-      <span className="text-xs ml-1">
+      <span className="text-sm ml-1">
         (
         {allergenList.map((allergen, idx) => {
           const isUserAllergy = userAllergies.includes(allergen);
@@ -213,13 +213,13 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
           {/* 오늘 날짜 표시 */}
           <div className="mb-4">
             <div className="flex items-center gap-2">
-              <div className="bg-teal-500 text-white px-3 py-1 rounded-md text-sm font-semibold">
+              <div className="bg-teal-500 text-white px-3 py-1 rounded-md text-base font-semibold">
                 {dayKo}요일
               </div>
-              <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-sm`}>{dateStr}</span>
+              <span className={`${darkMode ? 'text-gray-300' : 'text-gray-600'} text-base`}>{dateStr}</span>
               <button
                 onClick={onNavigateToSchedule}
-                className={`ml-auto text-sm underline ${darkMode ? 'text-teal-300' : 'text-teal-600'}`}
+                className={`ml-auto text-base underline ${darkMode ? 'text-teal-300' : 'text-teal-600'}`}
               >
                 식단표 조회
               </button>
@@ -235,7 +235,7 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
             >
               <Utensils className={`w-16 h-16 mx-auto mb-3 ${darkMode ? 'text-gray-500' : 'text-gray-300'}`} />
               <div className={`text-lg font-semibold ${darkMode ? 'text-gray-100' : 'text-gray-800'}`}>식단 없음</div>
-              <div className={`text-sm mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
+              <div className={`text-base mt-1 ${darkMode ? 'text-gray-300' : 'text-gray-500'}`}>
                 해당 날짜는 급식이 제공되지 않아요.
               </div>
             </div>
@@ -243,23 +243,23 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
             // ✅ 기존 중식/석식 카드
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {/* 중식 */}
-              <div className="relative pt-3">
+              <div className="relative pt-3 flex flex-col">
                 <div className="absolute -top-0 left-4 z-10">
-                  <span className="bg-orange-500 text-white text-xs px-3 py-1 rounded-md font-semibold shadow-sm">
+                  <span className="bg-orange-500 text-white text-sm px-3 py-1 rounded-md font-semibold shadow-sm">
                     중식
                   </span>
                 </div>
 
                 <button
                   onClick={() => openModal('lunch')}
-                  className={`w-full ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg p-4 border-2 border-orange-200 hover:border-orange-300 hover:shadow-md transition cursor-pointer text-left min-h-[300px] md:min-h-0`}
+                  className={`w-full flex-1 flex flex-col ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg p-4 border-2 border-orange-200 hover:border-orange-300 hover:shadow-md transition cursor-pointer text-left`}
                 >
-                  <div className="space-y-1 mb-3">
+                  <div className="space-y-1 mb-3 flex-1">
                     {lunchItems.length > 0 ? (
                       lunchItems.map((item, idx) => (
                         <div
                           key={idx}
-                          className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'} flex items-center gap-1 flex-wrap`}
+                          className={`text-base ${darkMode ? 'text-gray-200' : 'text-gray-700'} flex items-center gap-1 flex-wrap`}
                         >
                           <span>• {item.name}</span>
                           {item.allergens && renderAllergens(item.allergens)}
@@ -269,14 +269,14 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
                         </div>
                       ))
                     ) : (
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <div className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         (중식 데이터 없음)
                       </div>
                     )}
                   </div>
 
                   {lunchNutrition && (
-                    <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mt-auto`}>
                       {lunchNutrition.calories}kcal · 탄 {lunchNutrition.carbs}g · 단 {lunchNutrition.protein}g · 지 {lunchNutrition.fat}g
                     </div>
                   )}
@@ -284,23 +284,23 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
               </div>
 
               {/* 석식 */}
-              <div className="relative pt-3">
+              <div className="relative pt-3 flex flex-col">
                 <div className="absolute -top-0 left-4 z-10">
-                  <span className="bg-blue-500 text-white text-xs px-3 py-1 rounded-md font-semibold shadow-sm">
+                  <span className="bg-blue-500 text-white text-sm px-3 py-1 rounded-md font-semibold shadow-sm">
                     석식
                   </span>
                 </div>
 
                 <button
                   onClick={() => openModal('dinner')}
-                  className={`w-full ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg p-4 border-2 border-blue-200 hover:border-blue-300 hover:shadow-md transition cursor-pointer text-left min-h-[300px] md:min-h-0`}
+                  className={`w-full flex-1 flex flex-col ${darkMode ? 'bg-gray-700' : 'bg-gray-50'} rounded-lg p-4 border-2 border-blue-200 hover:border-blue-300 hover:shadow-md transition cursor-pointer text-left`}
                 >
-                  <div className="space-y-1 mb-3">
+                  <div className="space-y-1 mb-3 flex-1">
                     {dinnerItems.length > 0 ? (
                       dinnerItems.map((item, idx) => (
                         <div
                           key={idx}
-                          className={`text-sm ${darkMode ? 'text-gray-200' : 'text-gray-700'} flex items-center gap-1 flex-wrap`}
+                          className={`text-base ${darkMode ? 'text-gray-200' : 'text-gray-700'} flex items-center gap-1 flex-wrap`}
                         >
                           <span>• {item.name}</span>
                           {item.allergens && renderAllergens(item.allergens)}
@@ -310,14 +310,14 @@ export function TodayMeal({ userAllergies, onNavigateToSchedule, darkMode = fals
                         </div>
                       ))
                     ) : (
-                      <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
+                      <div className={`text-base ${darkMode ? 'text-gray-400' : 'text-gray-500'}`}>
                         (석식 데이터 없음)
                       </div>
                     )}
                   </div>
 
                   {dinnerNutrition && (
-                    <div className={`text-xs ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+                    <div className={`text-sm ${darkMode ? 'text-gray-400' : 'text-gray-600'} mt-auto`}>
                       {dinnerNutrition.calories}kcal · 탄 {dinnerNutrition.carbs}g · 단 {dinnerNutrition.protein}g · 지 {dinnerNutrition.fat}g
                     </div>
                   )}
