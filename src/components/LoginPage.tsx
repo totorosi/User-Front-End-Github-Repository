@@ -145,6 +145,15 @@ export default function LoginPage({ onNavigate }: LoginPageProps) {
                                         </div>
                                     </div>
 
+                                    {/* 시연용 테스트 계정 */}
+                                    <div className="rounded-lg border border-emerald-100 bg-emerald-50 px-4 py-3 mb-1">
+                                        <p className="text-xs font-semibold text-emerald-800 mb-1">
+                                            시연용 테스트 계정
+                                        </p>
+                                        <p className="text-sm text-emerald-900">Email: student1@naver.com</p>
+                                        <p className="text-sm text-emerald-900">PASSWORD: qwer1234!</p>
+                                    </div>
+
                                     <button
                                         type="submit"
                                         disabled={isLoading || !canLogin}
