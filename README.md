@@ -1,11 +1,21 @@
+# NutriAssistant 학생 Front-End
 
-  # Create Based on Reference
+KT AIVLE School 8기 10반 18조 빅프로젝트 'AI 기반 급식 운영 자동화 시스템(NutriAssistant)'의 학생용 프론트엔드(React/TypeScript)입니다. 팀 합의 하에 포트폴리오 목적으로 개인 계정에도 게시합니다 (Private).
 
-  This is a code bundle for Create Based on Reference. The original project is available at https://www.figma.com/design/5Nq5TGNJsNdfL5EIUw5hmk/Create-Based-on-Reference.
+## 관련 저장소
 
-  ## Running the code
+| 대상 | 링크 |
+|------|------|
+| Backend | https://github.com/totorosi/NutriAssistant-Back |
+| AI (FastAPI) | https://github.com/totorosi/NutriAssistant-AI |
+| 영양사 Front-End | https://github.com/totorosi/smart-meal-nutritionist-web |
 
-  Run `npm i` to install the dependencies.
+## 기술 스택
+React, TypeScript, Vite
 
-  Run `npm run dev` to start the development server.
-  
+## 담당 역할
+Frontend는 QA 및 일부 버그 직접 수정을 담당했습니다 (팀원 계정으로 커밋 반영). Backend/AI는 직접 개발 담당했습니다.
+
+## Running the code
+Run `npm i` to install the dependencies.
+Run `npm run dev` to start the development server.
