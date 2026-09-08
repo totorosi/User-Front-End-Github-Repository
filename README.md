@@ -14,7 +14,7 @@ KT AIVLE School 8기 10반 18조 빅프로젝트 'AI 기반 급식 운영 자동
 React, TypeScript, Vite
 
 ## 담당 역할
-Frontend는 QA 및 일부 버그 직접 수정을 담당했습니다 (팀원 계정으로 커밋 반영). Backend/AI는 직접 개발 담당했습니다.
+Frontend는 QA 및 일부 버그 수정을 담당했습니다 (팀원 계정으로 커밋 반영). Backend/AI는 개발 담당했습니다.
 
 ## Running the code
 Run `npm i` to install the dependencies.
