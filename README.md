@@ -1,6 +1,6 @@
 # NutriAssistant 학생 Front-End
 
-KT AIVLE School 8기 10반 18조 빅프로젝트 'AI 기반 급식 운영 자동화 시스템(NutriAssistant)'의 학생용 프론트엔드(React/TypeScript)입니다. 팀 합의 하에 포트폴리오 목적으로 개인 계정에도 게시합니다 (Private).
+KT AIVLE School 8기 10반 18조 빅프로젝트 'AI 기반 급식 운영 자동화 시스템(NutriAssistant)'의 학생용 프론트엔드(React/TypeScript)입니다. 팀 합의 하에 포트폴리오 목적으로 개인 계정에도 게시합니다.
 
 ## 관련 저장소
 
